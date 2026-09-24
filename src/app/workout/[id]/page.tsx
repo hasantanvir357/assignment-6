@@ -1,38 +1,59 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 import { getSingleWorkout } from '@/lib/workouts';
-import { notFound } from 'next/navigation';
+import { useWorkout } from '@/context/WorkoutContext';
 import Link from 'next/link';
 
-export default async function WorkoutDetailsPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const workout = await getSingleWorkout(id);
+export default function WorkoutDetailsPage() {
+  const params = useParams();
+  const id = params.id as string;
 
-  if (!workout) {
-    notFound();
+  const [workout, setWorkout] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const { addToPlan, addToSaved } = useWorkout();
+
+  useEffect(() => {
+    if (id) {
+      getSingleWorkout(id).then((data) => {
+        setWorkout(data);
+        setLoading(false);
+      });
+    }
+  }, [id]);
+
+  if (loading) {
+    return <div className="text-center py-20 text-zinc-500 font-medium">Loading details...</div>;
   }
 
-  const title = workout.title || (workout as any).name || 'UNTITLED WORKOUT';
+  if (!workout) {
+    return <div className="text-center py-20 text-zinc-500 font-medium">Workout not found!</div>;
+  }
+
+  const title = workout.title || workout.name || 'UNTITLED WORKOUT';
   const description =
     workout.description ||
     'A compound movement that builds upper body strength, targeting major muscle groups with controlled power.';
   const equipment = workout.equipment || 'Bodyweight';
-  const difficulty = (workout as any).difficulty || 'Intermediate';
-  const sets = (workout as any).sets || '4';
-  const reps = (workout as any).reps || '6-8';
+  const difficulty = workout.difficulty || 'Intermediate';
+  const sets = workout.sets || '4';
+  const reps = workout.reps || '6-8';
   const rating = workout.rating || 4.8;
 
-  let categories: string[] = workout.category || (workout as any).categories || [];
+  let categories: string[] = workout.category || workout.categories || [];
   if (typeof categories === 'string') {
     categories = (categories as string).split(',').map((c) => c.trim());
   }
 
-  const durationRaw = workout.duration || (workout as any).time || '';
+  const durationRaw = workout.duration || workout.time || '';
   const durationText = durationRaw
     ? durationRaw.toString().includes('min')
       ? durationRaw
       : `${durationRaw} min`
     : '25 min';
 
-  const caloriesRaw = workout.calories || (workout as any).calorie || (workout as any).caloriesBurned || '';
+  const caloriesRaw = workout.calories || workout.calorie || workout.caloriesBurned || '';
   const caloriesText = caloriesRaw
     ? caloriesRaw.toString().includes('kcal')
       ? caloriesRaw
@@ -138,10 +159,16 @@ export default async function WorkoutDetailsPage({ params }: { params: Promise<{
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4">
-            <button className="bg-[#ccff00] text-black hover:bg-[#b3e600] text-xs font-black uppercase tracking-wider py-3.5 px-6 rounded-xl transition flex items-center justify-center gap-2">
+            <button
+              onClick={() => addToPlan(workout)}
+              className="bg-[#ccff00] text-black hover:bg-[#b3e600] text-xs font-black uppercase tracking-wider py-3.5 px-6 rounded-xl transition flex items-center justify-center gap-2 cursor-pointer"
+            >
               <span>📅</span> Add to today's plan
             </button>
-            <button className="bg-transparent border border-zinc-700/80 hover:bg-zinc-800/60 text-white text-xs font-black uppercase tracking-wider py-3.5 px-6 rounded-xl transition flex items-center justify-center gap-2">
+            <button
+              onClick={() => addToSaved(workout)}
+              className="bg-transparent border border-zinc-700/80 hover:bg-zinc-800/60 text-white text-xs font-black uppercase tracking-wider py-3.5 px-6 rounded-xl transition flex items-center justify-center gap-2 cursor-pointer"
+            >
               <span>🔖</span> Save for later
             </button>
           </div>

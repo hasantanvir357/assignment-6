@@ -1,7 +1,6 @@
 import Link from 'next/link';
 
 export default function WorkoutCard({ workout }: { workout: any }) {
-  // 1. Dynamic Title Extraction
   const title = workout.title || workout.name || workout.workoutName || 'UNTITLED WORKOUT';
 
   let rawCategory =
