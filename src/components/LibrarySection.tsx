@@ -17,10 +17,29 @@ export default function LibrarySection() {
     });
   }, []);
 
+  const extractNumber = (val: unknown): number => {
+    if (!val) return 0;
+    if (typeof val === 'number') return val;
+    const parsed = parseInt(val.toString().replace(/\D/g, ''), 10);
+    return isNaN(parsed) ? 0 : parsed;
+  };
+
   const sortedWorkouts = [...workouts].sort((a, b) => {
-    if (sortBy === 'duration') return parseInt(a.duration) - parseInt(b.duration);
-    if (sortBy === 'calories') return parseInt(a.calories) - parseInt(b.calories);
-    if (sortBy === 'rating') return b.rating - a.rating;
+    const workoutA = a as Workout & Record<string, unknown>;
+    const workoutB = b as Workout & Record<string, unknown>;
+
+    if (sortBy === 'duration') {
+      return extractNumber(workoutA.duration || workoutA.time) - extractNumber(workoutB.duration || workoutB.time);
+    }
+    if (sortBy === 'calories') {
+      return (
+        extractNumber(workoutB.calories || workoutB.calorie || workoutB.caloriesBurned) -
+        extractNumber(workoutA.calories || workoutA.calorie || workoutA.caloriesBurned)
+      );
+    }
+    if (sortBy === 'rating') {
+      return Number(workoutB.rating || 0) - Number(workoutA.rating || 0);
+    }
     return 0;
   });
 
@@ -28,7 +47,9 @@ export default function LibrarySection() {
     <section id="library" className="max-w-7xl mx-auto px-6 pt-12">
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
         <div>
-          <h2 className="text-2xl font-bold uppercase text-white tracking-tight">THE LIBRARY</h2>
+          <h2 className="font-[family-name:var(--font-oswald)] text-3xl md:text-4xl font-extrabold uppercase text-white tracking-wider">
+            THE LIBRARY
+          </h2>
           <p className="text-xs text-zinc-400">Twelve lifts covering every major muscle group.</p>
         </div>
 
@@ -37,7 +58,7 @@ export default function LibrarySection() {
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as 'duration' | 'calories' | 'rating')}
-            className="select select-bordered select-xs bg-base-100 text-white border-zinc-700 focus:border-[#ccff00]"
+            className="select select-bordered select-xs bg-[#14151a] text-white border-zinc-700 focus:border-[#ccff00]"
           >
             <option value="duration">Duration</option>
             <option value="calories">Calories</option>
