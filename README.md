@@ -6,8 +6,8 @@
 
 ## 🚀 Live Demo & Links
 
-- **Live Web Application:** [https://your-project.vercel.app](https://your-project.vercel.app) _(Replace with your Vercel URL)_
-- **GitHub Repository:** [https://github.com/your-username/assignment-6](https://github.com/your-username/assignment-6) _(Replace with your Repo URL)_
+- **Live Web Application:** [https://assignment-6-delta-eight.vercel.app/](https://assignment-6-delta-eight.vercel.app/)
+- **GitHub Repository:** [https://github.com/hasantanvir357/assignment-6](https://github.com/hasantanvir357/assignment-6)
 
 ---
 
@@ -49,6 +49,6 @@ To run this project locally on your machine, follow these steps:
 
 1. **Clone the repository:**
    ```bash
-   git clone [https://github.com/your-username/assignment-6.git](https://github.com/your-username/assignment-6.git)
+   git clone [https://github.com/hasantanvir357/assignment-6.git](https://github.com/hasantanvir357/assignment-6.git)
    cd assignment-6
    ```
