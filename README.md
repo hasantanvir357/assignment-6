@@ -7,7 +7,7 @@
 ## 🚀 Live Demo & Links
 
 - **Live Web Application:** [https://your-project.vercel.app](https://your-project.vercel.app) _(Replace with your Vercel URL)_
-- **GitHub Repository:** [https://github.com/your-username/assignment-6](https://github.com/your-username/assignment-6) _(Replace with your Repo URL)_
+- **GitHub Repository:** https://github.com/hasantanvir357/assignment-6
 
 ---
 
