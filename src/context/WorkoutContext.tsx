@@ -18,18 +18,35 @@ const WorkoutContext = createContext<WorkoutContextType | undefined>(undefined);
 export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
   const [todaysPlan, setTodaysPlan] = useState<Workout[]>([]);
   const [savedWorkouts, setSavedWorkouts] = useState<Workout[]>([]);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
     const savedPlan = localStorage.getItem('fitlog_plan');
     const savedSaved = localStorage.getItem('fitlog_saved');
-    if (savedPlan) setTodaysPlan(JSON.parse(savedPlan));
-    if (savedSaved) setSavedWorkouts(JSON.parse(savedSaved));
+
+    if (savedPlan) {
+      try {
+        setTodaysPlan(JSON.parse(savedPlan));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    if (savedSaved) {
+      try {
+        setSavedWorkouts(JSON.parse(savedSaved));
+      } catch (e) {
+        console.error(e);
+      }
+    }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('fitlog_plan', JSON.stringify(todaysPlan));
-    localStorage.setItem('fitlog_saved', JSON.stringify(savedWorkouts));
-  }, [todaysPlan, savedWorkouts]);
+    if (isMounted) {
+      localStorage.setItem('fitlog_plan', JSON.stringify(todaysPlan));
+      localStorage.setItem('fitlog_saved', JSON.stringify(savedWorkouts));
+    }
+  }, [todaysPlan, savedWorkouts, isMounted]);
 
   const addToPlan = (workout: Workout) => {
     if (todaysPlan.length >= 5) {
@@ -40,7 +57,7 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
       toast.error("Already in today's plan!");
       return;
     }
-    setTodaysPlan([...todaysPlan, workout]);
+    setTodaysPlan((prev) => [...prev, workout]);
     toast.success("Added to today's plan!");
   };
 
@@ -49,17 +66,17 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
       toast.error('Already saved for later!');
       return;
     }
-    setSavedWorkouts([...savedWorkouts, workout]);
+    setSavedWorkouts((prev) => [...prev, workout]);
     toast.success('Saved for later!');
   };
 
   const removeFromPlan = (id: string) => {
-    setTodaysPlan(todaysPlan.filter((w) => w.id !== id));
+    setTodaysPlan((prev) => prev.filter((w) => w.id !== id));
     toast.success("Removed from today's plan!");
   };
 
   const removeFromSaved = (id: string) => {
-    setSavedWorkouts(savedWorkouts.filter((w) => w.id !== id));
+    setSavedWorkouts((prev) => prev.filter((w) => w.id !== id));
     toast.success('Removed from saved!');
   };
 

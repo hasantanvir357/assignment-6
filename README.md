@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🏋️ FITLOG — Interactive Workout Planner & Exercise Library
 
-## Getting Started
+**FITLOG** is a modern, responsive, and high-performance workout planning application built using **Next.js (App Router)**, **TypeScript**, **Tailwind CSS**, and **DaisyUI**. Designed to deliver a slick dark-mode aesthetic with custom lime accents (`#ccff00`), FITLOG helps users browse, sort, save, and manage their daily training routines seamlessly.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 Live Demo & Links
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Live Web Application:** [https://your-project.vercel.app](https://your-project.vercel.app) _(Replace with your Vercel URL)_
+- **GitHub Repository:** [https://github.com/your-username/assignment-6](https://github.com/your-username/assignment-6) _(Replace with your Repo URL)_
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## ✨ 5 Key Features
 
-## Learn More
+1. **Dynamic Exercise Sorting (C1 Requirement):**
+   Users can effortlessly sort exercises in the library by **Duration**, **Calories**, or **Rating** in real time via an intuitive dropdown selector.
 
-To learn more about Next.js, take a look at the following resources:
+2. **Interactive Plan Management (C3 Requirement):**
+   Dedicated **My Plan** page featuring real-time workout metrics (Total Exercises, Minutes, and Calories). Allows users to mark exercises as **"✓ Done"** or **"✕ Remove"** with instant toast feedback.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. **Smart LocalStorage Data Persistence (Bonus):**
+   Ensures that added plans and saved exercises persist across browser refreshes without losing state or causing Next.js SSR hydration bugs.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+4. **Cap of 5 Lifts Rule (Bonus):**
+   Enforces a strict limit of 5 workouts per day to encourage realistic training goals, giving a clear warning toast when the limit is reached.
 
-## Deploy on Vercel
+5. **Custom 404 & Loading States (General Requirement):**
+   Features a custom-styled 404 "Page Not Found" card banner matching the app's dark lime theme and clean loading states during asynchronous API data fetching.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🛠️ Technologies Used
+
+| Technology                        | Purpose                               |
+| :-------------------------------- | :------------------------------------ |
+| **Next.js 15 (App Router)**       | React Framework & File-based Routing  |
+| **TypeScript**                    | Type-safe code architecture           |
+| **Tailwind CSS**                  | Utility-first custom styling          |
+| **DaisyUI**                       | UI Component library support          |
+| **React Hot Toast**               | Toast notifications for user feedback |
+| **Google Fonts (Oswald & Inter)** | Custom modern typography              |
+
+---
+
+## 💻 Local Setup & Installation
+
+To run this project locally on your machine, follow these steps:
+
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/your-username/assignment-6.git](https://github.com/your-username/assignment-6.git)
+   cd assignment-6
+   ```

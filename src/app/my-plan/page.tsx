@@ -1,12 +1,25 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useWorkout } from '@/context/WorkoutContext';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import toast from 'react-hot-toast';
 
-export default function MyPlanPage() {
-  const { todaysPlan, savedWorkouts, removeFromPlan, removeFromSaved } = useWorkout();
+function MyPlanContent() {
+  const { todaysPlan, savedWorkouts, removeFromPlan, removeFromSaved, addToPlan } = useWorkout();
+  const searchParams = useSearchParams();
+  const tabQuery = searchParams.get('tab');
+
   const [activeTab, setActiveTab] = useState<'today' | 'saved'>('today');
+
+  useEffect(() => {
+    if (tabQuery === 'saved') {
+      setActiveTab('saved');
+    } else {
+      setActiveTab('today');
+    }
+  }, [tabQuery]);
 
   const currentList = activeTab === 'today' ? todaysPlan : savedWorkouts;
 
@@ -20,6 +33,11 @@ export default function MyPlanPage() {
     const cal = parseInt((item.calories || item.calorie || '0').toString().replace(/\D/g, ''), 10);
     return acc + (isNaN(cal) ? 0 : cal);
   }, 0);
+
+  const handleMarkAsDone = (id: string, title: string) => {
+    removeFromPlan(id);
+    toast.success(`Completed "${title}"! Great job! 🎉`);
+  };
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-10">
@@ -46,7 +64,7 @@ export default function MyPlanPage() {
       <div className="flex gap-4 border-b border-zinc-800 mb-8">
         <button
           onClick={() => setActiveTab('today')}
-          className={`pb-3 text-xs font-black uppercase tracking-wider transition relative ${
+          className={`pb-3 text-xs font-black uppercase tracking-wider transition relative cursor-pointer ${
             activeTab === 'today' ? 'text-[#ccff00]' : 'text-zinc-500 hover:text-white'
           }`}
         >
@@ -55,7 +73,7 @@ export default function MyPlanPage() {
         </button>
         <button
           onClick={() => setActiveTab('saved')}
-          className={`pb-3 text-xs font-black uppercase tracking-wider transition relative ${
+          className={`pb-3 text-xs font-black uppercase tracking-wider transition relative cursor-pointer ${
             activeTab === 'saved' ? 'text-[#ccff00]' : 'text-zinc-500 hover:text-white'
           }`}
         >
@@ -67,7 +85,11 @@ export default function MyPlanPage() {
       {currentList.length === 0 ? (
         <div className="text-center py-20 bg-[#14151a]/50 rounded-2xl border border-zinc-800/80">
           <h3 className="font-bold text-base uppercase text-white mb-1">NOTHING HERE YET</h3>
-          <p className="text-xs text-zinc-400 mb-6">Browse the library and add a lift to get today moving.</p>
+          <p className="text-xs text-zinc-400 mb-6">
+            {activeTab === 'today'
+              ? 'Browse the library and add a lift to get today moving.'
+              : 'You have no saved workouts for later.'}
+          </p>
           <Link
             href="/"
             className="inline-block bg-[#ccff00] text-black text-xs font-black uppercase tracking-wider px-6 py-2.5 rounded-xl hover:bg-[#b3e600] transition"
@@ -103,28 +125,37 @@ export default function MyPlanPage() {
                 >
                   👁️
                 </Link>
+
                 {activeTab === 'today' ? (
                   <>
                     <button
-                      onClick={() => removeFromPlan(item.id)}
-                      className="p-2 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 rounded-lg text-xs"
+                      onClick={() => handleMarkAsDone(item.id, item.title || item.name || 'Workout')}
+                      className="p-2 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 rounded-lg text-xs font-bold cursor-pointer"
                     >
-                      ✓
+                      ✓ Done
                     </button>
                     <button
                       onClick={() => removeFromPlan(item.id)}
-                      className="p-2 border border-rose-500/30 text-rose-400 hover:bg-rose-500/10 rounded-lg text-xs"
+                      className="p-2 border border-rose-500/30 text-rose-400 hover:bg-rose-500/10 rounded-lg text-xs font-bold cursor-pointer"
                     >
                       ✕
                     </button>
                   </>
                 ) : (
-                  <button
-                    onClick={() => removeFromSaved(item.id)}
-                    className="p-2 border border-rose-500/30 text-rose-400 hover:bg-rose-500/10 rounded-lg text-xs"
-                  >
-                    ✕
-                  </button>
+                  <>
+                    <button
+                      onClick={() => addToPlan(item)}
+                      className="p-2 bg-[#ccff00] text-black hover:bg-[#b3e600] rounded-lg text-xs font-bold cursor-pointer"
+                    >
+                      + Add to Plan
+                    </button>
+                    <button
+                      onClick={() => removeFromSaved(item.id)}
+                      className="p-2 border border-rose-500/30 text-rose-400 hover:bg-rose-500/10 rounded-lg text-xs font-bold cursor-pointer"
+                    >
+                      ✕
+                    </button>
+                  </>
                 )}
               </div>
             </div>
@@ -132,5 +163,13 @@ export default function MyPlanPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function MyPlanPage() {
+  return (
+    <Suspense fallback={<div className="text-center py-20 text-zinc-500 font-medium">Loading plan...</div>}>
+      <MyPlanContent />
+    </Suspense>
   );
 }
