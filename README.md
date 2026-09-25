@@ -32,14 +32,14 @@
 
 ## 🛠️ Technologies Used
 
-| Technology                        | Purpose                               |
-| :-------------------------------- | :------------------------------------ |
-| **Next.js 15 (App Router)**       | React Framework & File-based Routing  |
-| **TypeScript**                    | Type-safe code architecture           |
-| **Tailwind CSS**                  | Utility-first custom styling          |
-| **DaisyUI**                       | UI Component library support          |
-| **React Hot Toast**               | Toast notifications for user feedback |
-| **Google Fonts (Oswald & Inter)** | Custom modern typography              |
+| Technology | Purpose |
+| :--- | :--- |
+| **Next.js 15 (App Router)** | React Framework & File-based Routing |
+| **TypeScript** | Type-safe code architecture |
+| **Tailwind CSS** | Utility-first custom styling |
+| **DaisyUI** | UI Component library support |
+| **React Hot Toast** | Toast notifications for user feedback |
+| **Google Fonts (Oswald & Inter)** | Custom modern typography |
 
 ---
 
@@ -51,4 +51,3 @@ To run this project locally on your machine, follow these steps:
    ```bash
    git clone [https://github.com/hasantanvir357/assignment-6.git](https://github.com/hasantanvir357/assignment-6.git)
    cd assignment-6
-   ```
