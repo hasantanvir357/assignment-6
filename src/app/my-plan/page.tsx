@@ -25,10 +25,8 @@ function MyPlanContent() {
   const searchParams = useSearchParams();
   const tabQuery = searchParams.get('tab');
 
-  const [selectedTab, setSelectedTab] = useState<'today' | 'saved'>('today');
+  const [activeTab, setActiveTab] = useState<'today' | 'saved'>(() => (tabQuery === 'saved' ? 'saved' : 'today'));
   const [sortBy, setSortBy] = useState<'duration' | 'calories' | 'rating'>('duration');
-
-  const activeTab = tabQuery === 'saved' ? 'saved' : selectedTab;
 
   const currentList = (activeTab === 'today' ? todaysPlan : savedWorkouts) as WorkoutItem[];
 
@@ -56,15 +54,14 @@ function MyPlanContent() {
   });
 
   const totalExercises = todaysPlan.length;
-  const totalMinutes = todaysPlan.reduce((acc, item: WorkoutItem) => {
-    const min = extractNumber(item.duration || item.time);
-    return acc + min;
-  }, 0);
-
-  const totalCalories = todaysPlan.reduce((acc, item: WorkoutItem) => {
-    const cal = extractNumber(item.calories || item.calorie || item.caloriesBurned);
-    return acc + cal;
-  }, 0);
+  const totalMinutes = (todaysPlan as WorkoutItem[]).reduce(
+    (acc, item) => acc + extractNumber(item.duration || item.time),
+    0
+  );
+  const totalCalories = (todaysPlan as WorkoutItem[]).reduce(
+    (acc, item) => acc + extractNumber(item.calories || item.calorie || item.caloriesBurned),
+    0
+  );
 
   const handleMarkAsDone = (id: string, title: string) => {
     removeFromPlan(id);
@@ -78,6 +75,7 @@ function MyPlanContent() {
       </h1>
       <p className="text-xs text-zinc-400 mb-8">Cap of five lifts for today. Finish them, then load more.</p>
 
+      {/* Summary Cards */}
       <div className="grid grid-cols-3 gap-4 mb-10">
         <div className="bg-[#14151a] border border-zinc-800/80 p-5 rounded-2xl text-center">
           <div className="text-3xl font-extrabold text-[#ccff00] mb-1">{totalExercises}</div>
@@ -93,10 +91,11 @@ function MyPlanContent() {
         </div>
       </div>
 
+      {/* Header Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-zinc-800/80 pb-3 mb-8 gap-4">
         <div className="flex gap-6">
           <button
-            onClick={() => setSelectedTab('today')}
+            onClick={() => setActiveTab('today')}
             className={`text-xs font-black uppercase tracking-wider transition relative pb-3 cursor-pointer ${
               activeTab === 'today' ? 'text-[#ccff00]' : 'text-zinc-500 hover:text-white'
             }`}
@@ -105,7 +104,7 @@ function MyPlanContent() {
             {activeTab === 'today' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#ccff00]" />}
           </button>
           <button
-            onClick={() => setSelectedTab('saved')}
+            onClick={() => setActiveTab('saved')}
             className={`text-xs font-black uppercase tracking-wider transition relative pb-3 cursor-pointer ${
               activeTab === 'saved' ? 'text-[#ccff00]' : 'text-zinc-500 hover:text-white'
             }`}
@@ -129,6 +128,7 @@ function MyPlanContent() {
         </div>
       </div>
 
+      {/* Workout Items */}
       {sortedList.length === 0 ? (
         <div className="text-center py-20 bg-[#14151a]/50 rounded-2xl border border-zinc-800/80">
           <h3 className="font-bold text-base uppercase text-white mb-1">NOTHING HERE YET</h3>
@@ -167,11 +167,10 @@ function MyPlanContent() {
                       {item.title || item.name}
                     </h4>
                     <p className="text-xs text-zinc-400 mb-1.5">{item.equipment || 'Bodyweight'}</p>
-
                     <div className="flex items-center gap-3 text-[11px] text-zinc-400 font-medium">
-                      <span className="flex items-center gap-1">🕒 {durationVal} min</span>
-                      <span className="flex items-center gap-1">🔥 {caloriesVal} kcal</span>
-                      <span className="flex items-center gap-1 text-zinc-300">⭐ {ratingVal}</span>
+                      <span>🕒 {durationVal} min</span>
+                      <span>🔥 {caloriesVal} kcal</span>
+                      <span className="text-zinc-300">⭐ {ratingVal}</span>
                     </div>
                   </div>
                 </div>
@@ -192,7 +191,6 @@ function MyPlanContent() {
                       >
                         ✓ Mark as Done
                       </button>
-
                       <button
                         onClick={() => removeFromPlan(item.id)}
                         className="p-2 text-zinc-500 hover:text-rose-400 rounded-lg text-sm transition cursor-pointer"
@@ -204,7 +202,7 @@ function MyPlanContent() {
                   ) : (
                     <>
                       <button
-                        onClick={() => addToPlan(item as Parameters<typeof addToPlan>[0])}
+                        onClick={() => addToPlan(item as unknown as Parameters<typeof addToPlan>[0])}
                         className="px-4 py-2 bg-[#ccff00] hover:bg-[#b3e600] text-black rounded-xl text-xs font-black uppercase tracking-wider transition cursor-pointer"
                       >
                         + Add to Plan
