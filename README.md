@@ -13,19 +13,19 @@
 
 ## ✨ 5 Key Features
 
-1. **Dynamic Exercise Sorting (C1 Requirement):**
+1. **Dynamic Exercise Sorting :**
    Users can effortlessly sort exercises in the library by **Duration**, **Calories**, or **Rating** in real time via an intuitive dropdown selector.
 
-2. **Interactive Plan Management (C3 Requirement):**
+2. **Interactive Plan Management :**
    Dedicated **My Plan** page featuring real-time workout metrics (Total Exercises, Minutes, and Calories). Allows users to mark exercises as **"✓ Done"** or **"✕ Remove"** with instant toast feedback.
 
-3. **Smart LocalStorage Data Persistence (Bonus):**
+3. **Smart LocalStorage Data Persistence :**
    Ensures that added plans and saved exercises persist across browser refreshes without losing state or causing Next.js SSR hydration bugs.
 
-4. **Cap of 5 Lifts Rule (Bonus):**
+4. **Cap of 5 Lifts Rule :**
    Enforces a strict limit of 5 workouts per day to encourage realistic training goals, giving a clear warning toast when the limit is reached.
 
-5. **Custom 404 & Loading States (General Requirement):**
+5. **Custom 404 & Loading States :**
    Features a custom-styled 404 "Page Not Found" card banner matching the app's dark lime theme and clean loading states during asynchronous API data fetching.
 
 ---
