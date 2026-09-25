@@ -1,28 +1,36 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, Suspense } from 'react';
 import { useWorkout } from '@/context/WorkoutContext';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
+
+type WorkoutItem = {
+  id: string;
+  title?: string;
+  name?: string;
+  image?: string;
+  equipment?: string;
+  duration?: string | number;
+  time?: string | number;
+  calories?: string | number;
+  calorie?: string | number;
+  caloriesBurned?: string | number;
+  rating?: string | number;
+};
 
 function MyPlanContent() {
   const { todaysPlan, savedWorkouts, removeFromPlan, removeFromSaved, addToPlan } = useWorkout();
   const searchParams = useSearchParams();
   const tabQuery = searchParams.get('tab');
 
-  const [activeTab, setActiveTab] = useState<'today' | 'saved'>('today');
+  const [selectedTab, setSelectedTab] = useState<'today' | 'saved'>('today');
   const [sortBy, setSortBy] = useState<'duration' | 'calories' | 'rating'>('duration');
 
-  useEffect(() => {
-    if (tabQuery === 'saved') {
-      setActiveTab('saved');
-    } else {
-      setActiveTab('today');
-    }
-  }, [tabQuery]);
+  const activeTab = tabQuery === 'saved' ? 'saved' : selectedTab;
 
-  const currentList = activeTab === 'today' ? todaysPlan : savedWorkouts;
+  const currentList = (activeTab === 'today' ? todaysPlan : savedWorkouts) as WorkoutItem[];
 
   const extractNumber = (val: unknown): number => {
     if (!val) return 0;
@@ -31,7 +39,7 @@ function MyPlanContent() {
     return isNaN(parsed) ? 0 : parsed;
   };
 
-  const sortedList = [...currentList].sort((a: any, b: any) => {
+  const sortedList = [...currentList].sort((a, b) => {
     if (sortBy === 'duration') {
       return extractNumber(a.duration || a.time) - extractNumber(b.duration || b.time);
     }
@@ -48,12 +56,12 @@ function MyPlanContent() {
   });
 
   const totalExercises = todaysPlan.length;
-  const totalMinutes = todaysPlan.reduce((acc, item: any) => {
+  const totalMinutes = todaysPlan.reduce((acc, item: WorkoutItem) => {
     const min = extractNumber(item.duration || item.time);
     return acc + min;
   }, 0);
 
-  const totalCalories = todaysPlan.reduce((acc, item: any) => {
+  const totalCalories = todaysPlan.reduce((acc, item: WorkoutItem) => {
     const cal = extractNumber(item.calories || item.calorie || item.caloriesBurned);
     return acc + cal;
   }, 0);
@@ -88,7 +96,7 @@ function MyPlanContent() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-zinc-800/80 pb-3 mb-8 gap-4">
         <div className="flex gap-6">
           <button
-            onClick={() => setActiveTab('today')}
+            onClick={() => setSelectedTab('today')}
             className={`text-xs font-black uppercase tracking-wider transition relative pb-3 cursor-pointer ${
               activeTab === 'today' ? 'text-[#ccff00]' : 'text-zinc-500 hover:text-white'
             }`}
@@ -97,7 +105,7 @@ function MyPlanContent() {
             {activeTab === 'today' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#ccff00]" />}
           </button>
           <button
-            onClick={() => setActiveTab('saved')}
+            onClick={() => setSelectedTab('saved')}
             className={`text-xs font-black uppercase tracking-wider transition relative pb-3 cursor-pointer ${
               activeTab === 'saved' ? 'text-[#ccff00]' : 'text-zinc-500 hover:text-white'
             }`}
@@ -138,7 +146,7 @@ function MyPlanContent() {
         </div>
       ) : (
         <div className="space-y-4">
-          {sortedList.map((item: any) => {
+          {sortedList.map((item) => {
             const durationVal = extractNumber(item.duration || item.time) || 15;
             const caloriesVal = extractNumber(item.calories || item.calorie || item.caloriesBurned) || 120;
             const ratingVal = item.rating || 4.5;
@@ -196,7 +204,7 @@ function MyPlanContent() {
                   ) : (
                     <>
                       <button
-                        onClick={() => addToPlan(item)}
+                        onClick={() => addToPlan(item as Parameters<typeof addToPlan>[0])}
                         className="px-4 py-2 bg-[#ccff00] hover:bg-[#b3e600] text-black rounded-xl text-xs font-black uppercase tracking-wider transition cursor-pointer"
                       >
                         + Add to Plan
